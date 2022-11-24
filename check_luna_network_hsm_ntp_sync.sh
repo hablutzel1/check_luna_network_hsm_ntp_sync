@@ -13,14 +13,14 @@ if output=$(ssh -n "$USER"@"$HOST" 'sysconf ntp status' | grep -E "^\*"); then
   if [[ "$output" =~ \*LOCAL(0)* ]]; then
     echo "No synchronization with the time server (only local synchronization?)"
     # TODO or should we just WARN or even provide an OK? Understand what exactly does it mean for an entry to start with "*LOCAL(0)".
-    exit 2;
+    exit 2 # CRITICAL
   else
     peer="$(echo "$output" | awk '{print $1}' | cut -d "*" -f 2)"
     offset="$(echo "$output" | awk '{print $9}')"
     echo "Synchronized with the server: $peer offset: $offset"
-    exit 0
+    exit 0 # OK
   fi
 else
   echo "No synchronization with the time server"
-  exit 2
+  exit 2 # CRITICAL
 fi
